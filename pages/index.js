@@ -1,71 +1,54 @@
-import { useCallback, useEffect, useState } from 'react'
-import Button from '../components/Button'
-import ClickCount from '../components/ClickCount'
-import styles from '../styles/home.module.css'
+import React,{useEffect} from 'react';
+import Link from 'next/link'; // Import the Link component
+import { useBlogContext } from '../contexts/BlogContext';
+import styles from '../styles/home.module.css';
 
-function throwError() {
-  console.log(
-    // The function body() is not defined
-    document.body()
-  )
-}
 
-function Home() {
-  const [count, setCount] = useState(0)
-  const increment = useCallback(() => {
-    setCount((v) => v + 1)
-  }, [setCount])
+// export const blogData = [
+//   {
+//     "id": 1,
+//     "author": "John Doe",
+//     "CreatedAt": "12-03-2023",
+//     "title": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
+//     "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
+//   },
+//   // Add more blog posts if needed
+// ];
+
+const Home = () => {
+  const { state, dispatch } = useBlogContext();
 
   useEffect(() => {
-    const r = setInterval(() => {
-      increment()
-    }, 1000)
-
-    return () => {
-      clearInterval(r)
+    async function fetchPosts() {
+      try {
+        const response = await fetch('/api/get-posts');
+        console.log('response', response)
+        const data = await response.json();
+        dispatch({ type: 'SET_BLOG_POSTS', payload: data });
+      } catch (error) {
+        console.error('Error fetching blog posts:', error);
+      }
     }
-  }, [increment])
+
+    fetchPosts();
+  }, [dispatch]);
 
   return (
-    <main className={styles.main}>
-      <h1>Fast Refresh Demo</h1>
-      <p>
-        Fast Refresh is a Next.js feature that gives you instantaneous feedback
-        on edits made to your React components, without ever losing component
-        state.
-      </p>
-      <hr className={styles.hr} />
-      <div>
-        <p>
-          Auto incrementing value. The counter won't reset after edits or if
-          there are errors.
-        </p>
-        <p>Current value: {count}</p>
-      </div>
-      <hr className={styles.hr} />
-      <div>
-        <p>Component with state.</p>
-        <ClickCount />
-      </div>
-      <hr className={styles.hr} />
-      <div>
-        <p>
-          The button below will throw 2 errors. You'll see the error overlay to
-          let you know about the errors but it won't break the page or reset
-          your state.
-        </p>
-        <Button
-          onClick={(e) => {
-            setTimeout(() => document.parentNode(), 0)
-            throwError()
-          }}
-        >
-          Throw an Error
-        </Button>
-      </div>
-      <hr className={styles.hr} />
-    </main>
-  )
-}
+    <div className={styles.blog_posts}>
+      <h1 className={styles.blog_posts_title}>Blog Posts</h1>
+      {state && state.blogPosts.map((blog) => (
+        <div key={blog.id} className={styles.blog_post}>
+          <Link href={`/${blog.id}`}>
+            <a className={styles.blog_post_link}>
+              <h2 className={styles.blog_post_title}>{blog.title}</h2>
+              <p className={styles.blog_post_author}>{blog.author}</p>
+              <p className={styles.blog_post_date}>{blog.CreatedAt}</p>
+            </a>
+          </Link>
+        </div>
+      ))}
+    </div>
+  );
+};
 
-export default Home
+export default Home;

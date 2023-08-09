@@ -1,0 +1,37 @@
+/* Header */
+.navbar {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  padding: 20px;
+  background-color: #333; /* Lighter background color */
+  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.1);
+}
+
+.blog_logo {
+  font-size: 28px;
+  font-weight: bold;
+  color: #fff; /* Dark text color */
+  text-decoration: none;
+  transition: color 0.3s ease-in-out;
+}
+
+.blog_logo:hover {
+  color: #ff9900; /* Hover color */
+}
+
+.blog_add {
+  font-size: 20px;
+  color: #f3f3f3; /* Slightly darker text color */
+  text-decoration: none;
+  margin-left: 20px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  background-color: #ff9900;
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.blog_add:hover {
+  background-color: #ffcc66; /* Hover background color */
+  color: #333; /* Hover text color */
+}
