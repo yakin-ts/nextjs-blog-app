@@ -11,8 +11,9 @@ const BlogPage = () => {
   const { state } = useBlogContext(); // Get the blogPosts from the state
 
   // Find the blog post with the matching ID in the state
+  console.log(state)
   const selectedBlog = state.blogPosts.find(
-    (blog) => blog.id === parseInt(slug)
+    (blog) => blog._id === slug
   );
 
   if (!selectedBlog) {

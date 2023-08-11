@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import styles from './AddBlogForm.module.css'; // Import your CSS module
 
-const AddBlogForm = ({ onAdd }) => {
+import React, { useState } from "react";
+import styles from './AddBlogForm.module.css';
+
+const AddBlogForm = ({ onSubmit }) => {
     const [author, setAuthor] = useState("");
     const [title, setTitle] = useState("");
     const [body, setBody] = useState("");
@@ -15,7 +16,7 @@ const AddBlogForm = ({ onAdd }) => {
                 body,
                 // Other properties like createdAt, etc.
             };
-            onAdd(newBlogPost);
+            onSubmit(newBlogPost); // Call the passed onSubmit function
             setAuthor("");
             setTitle("");
             setBody("");
@@ -25,7 +26,7 @@ const AddBlogForm = ({ onAdd }) => {
     return (
         <div className={styles.add_blog_form}>
             <h2 className={styles.title}>Add New Blog Post</h2>
-            <form onSubmit={handleSubmit}>
+            <form method="POST" onSubmit={handleSubmit}>
                 <input
                     type="text"
                     placeholder="Author"
@@ -46,7 +47,7 @@ const AddBlogForm = ({ onAdd }) => {
                     onChange={(e) => setBody(e.target.value)}
                     className={styles.textarea}
                 />
-                <button type="submit" className={styles.button}>Add Post</button>
+                <button type="submit" className={styles.button} >Add Post</button>
             </form>
         </div>
     );

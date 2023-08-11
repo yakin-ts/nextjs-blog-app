@@ -12,3 +12,12 @@ body {
   text-rendering: optimizeLegibility;
   hyphens: auto;
 }
+
+.edit_blog_page_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 60%;
+  padding: 30px;
+  margin: 80px auto;
+}

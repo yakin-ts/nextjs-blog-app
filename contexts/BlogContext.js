@@ -11,7 +11,8 @@ function blogReducer(state, action) {
     case 'SET_BLOG_POSTS':
       return { ...state, blogPosts: action.payload };
     case 'ADD_BLOG_POST':
-      return { ...state, blogPosts: [...state.blogPosts, action.payload] };
+      {console.log('In the reducer', action.payload)
+      return { ...state, blogPosts: [...state.blogPosts, action.payload] };}
     case 'UPDATE_BLOG_POST':
       const updatedBlogPosts = state.blogPosts.map((post) =>
         post._id === action.payload._id ? action.payload : post

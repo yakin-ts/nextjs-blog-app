@@ -1,7 +1,6 @@
 import { MongoClient } from 'mongodb';
 
-const uri = 'mongodb+srv://yakin:53Uk8n9VrkjG3kBq@cluster0.ady96.mongodb.net/blogger?retryWrites=true&w=majority';
-
+const uri = 'mongodb://localhost:27017/';
 const options = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -10,15 +9,19 @@ const options = {
 let client;
 let db;
 
-if (!client) {
-  client = new MongoClient(uri, options);
+export async function connectDB() {
+  if (!client) {
+    client = new MongoClient(uri, options);
+    await client.connect();
+    db = client.db('blogger');
+    // console.log('Connected to MongoDB', db);
+  }
+  return db;
 }
 
-export default async function connectDB() {
-  if (!client.isConnected()) {
-    await client.connect();
+export async function closeDB() {
+  if (client) {
+    await client.close();
+    console.log('Closed MongoDB connection');
   }
-  db = client.db('blogger'); 
-  console.log('Connected to MongoDB');
-  return db;
 }
