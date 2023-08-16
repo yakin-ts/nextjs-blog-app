@@ -1,40 +1,25 @@
-import React, { useEffect } from 'react';
-import Link from 'next/link'; // Import the Link component
-import { useBlogContext } from '../contexts/BlogContext';
+import React from 'react';
+import { useGetBlogsQuery } from '../store/features/blogs-api.js'; // Import the generated query hook
+import Link from 'next/link';
 import styles from '../styles/home.module.css';
 
 const Home = () => {
-  // Access the state and dispatch function from the BlogContext
-  const { state, dispatch } = useBlogContext();
+  // Use the generated query hook to fetch data
+  const { data: blogPosts = [], error, isLoading } = useGetBlogsQuery();
 
-  // Fetch and set the blog posts when the component mounts
-  useEffect(() => {
-    async function fetchPosts() {
-      try {
-        // Fetch blog posts data from the API
-        const response = await fetch('/api/get-posts');
-        console.log('API response:', response);
-        const data = await response.json();
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
 
-        // Update the state with fetched blog posts
-        dispatch({ type: 'SET_BLOG_POSTS', payload: data });
-      } catch (error) {
-        console.error('Error fetching blog posts:', error);
-      }
-    }
-
-    fetchPosts();
-  }, [dispatch]); // Run this effect only when dispatch changes
-
-  console.log('Current state:', state);
+  if (error) {
+    return <p>Error fetching blog posts: {error.message}</p>;
+  }
 
   return (
     <div className={styles.blog_posts}>
       <h1 className={styles.blog_posts_title}>Blog Posts</h1>
-      {/* Loop through each blog post and create a link */}
-      {state && state.blogPosts.map((blog) => (
+      {blogPosts.map((blog) => (
         <div key={blog.id} className={styles.blog_post}>
-          {/* Create a link to the individual blog post */}
           <Link href={`/${blog._id}`}>
             <a className={styles.blog_post_link}>
               <h2 className={styles.blog_post_title}>{blog.title}</h2>

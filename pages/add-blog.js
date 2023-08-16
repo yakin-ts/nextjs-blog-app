@@ -1,43 +1,21 @@
-
-
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import { useRouter } from 'next/router';
 import AddBlogForm from '../components/AddBlogForm';
-import { useBlogContext } from '../contexts/BlogContext';
-
+import { useAddBlogMutation } from '../store/features/blogs-api';
 
 const AddBlogPage = () => {
-  const { dispatch } = useBlogContext(); // Access the dispatch function from the context
+  // const dispatch = useDispatch();
+  const router = useRouter();
+  const [addBlog] = useAddBlogMutation();
 
-  const router = useRouter()
-
-  const handleAddBlog = (newBlogPost) => {
-    // Dispatch an action to add the new blog post to the context state
-    dispatch({ type: 'ADD_BLOG_POST', payload: newBlogPost });
-  };
-
-
- 
   const handleSubmit = async (formData) => {
-    // event.preventDefault();
-    console.log(formData)
     try {
-      const response = await fetch('/api/add-post', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-      console.log(response)
+      const result = await addBlog(formData);
 
-
-      if (response.ok) {
-        const newBlogPost = await response.json();
-
-        handleAddBlog(newBlogPost); // Call the handleAddBlog function 
-        router.push('/')
-        
+      if (result.data) {
+        console.log('Blog was added');
+        router.push('/');
       } else {
         console.error('Error adding blog post');
       }
@@ -47,9 +25,8 @@ const AddBlogPage = () => {
   };
 
   return (
-   <AddBlogForm onSubmit={handleSubmit} />
+    <AddBlogForm onSubmit={handleSubmit} />
   );
 };
 
 export default AddBlogPage;
-

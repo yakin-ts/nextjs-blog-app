@@ -1,47 +1,44 @@
 import React, { useState, useEffect } from 'react';
-import { useRouter, redirect} from 'next/router';
+import { useRouter } from 'next/router';
+import { useUpdateBlogMutation, useGetBlogsQuery } from '../../store/features/blogs-api'; // Import the generated RTK Query hooks
 import EditBlogForm from '../../components/EditBlogForm';
-import { useBlogContext } from '../../contexts/BlogContext';
 
 const EditBlogPage = () => {
   const router = useRouter();
-  const { state, dispatch } = useBlogContext();
   const { id } = router.query;
+
+  // Use the generated query hooks to fetch data and update a blog post
+  const { data: blogPosts } = useGetBlogsQuery();
+  const [updateBlog] = useUpdateBlogMutation();
+
+  const selectedBlog = blogPosts?.find((blog) => blog._id === id);
 
   const [formData, setFormData] = useState({
     author: '',
     title: '',
     body: '',
   });
-    // console.log(state.blogPosts);
+
   useEffect(() => {
-    const selectedBlog = state.blogPosts.find((blog) => blog._id === id);
     if (selectedBlog) {
       setFormData({
-          id:selectedBlog._id,
+        id: selectedBlog._id,
         author: selectedBlog.author,
         title: selectedBlog.title,
         body: selectedBlog.body,
       });
     }
-  }, [id, state.blogPosts]);
+  }, [id, selectedBlog]);
 
   const handleEditBlog = async (e) => {
-    // Perform API call or dispatch action to update the blog post
-      e.preventDefault();
-    try {
-      const response = await fetch(`/api/edit-post/`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+    e.preventDefault();
 
-        if (response.ok) {
-          console.log('blog was updated')
-        const updatedBlogPost = await response.json();
-        dispatch({ type: 'UPDATE_BLOG_POST', payload: updatedBlogPost });
+    try {
+      const { id, ...updatedData } = formData;
+      const response = await updateBlog(updatedData); // Use the updateBlog mutation
+
+      if (response.data) {
+        console.log('Blog was updated');
         router.push('/');
       } else {
         console.error('Error updating blog post');
@@ -53,11 +50,10 @@ const EditBlogPage = () => {
 
   return (
     <div className='edit_blog_page_container'>
-     
       <EditBlogForm
         formData={formData}
         setFormData={setFormData}
-        onEdit={(e)=>handleEditBlog(e)}
+        onEdit={(e) => handleEditBlog(e)}
       />
     </div>
   );

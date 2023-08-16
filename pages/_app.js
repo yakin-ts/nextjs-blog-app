@@ -1,14 +1,14 @@
 import '../global.css'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
-import { BlogProvider } from '../contexts/BlogContext';
-
+import {Provider} from 'react-redux';
+import store from '../store';
 export default function MyApp({ Component, pageProps }) {
   return (
-   <BlogProvider >
+   <Provider store={store}>
     <Header/>
     <Component {...pageProps} />
     <Footer/>
-   </BlogProvider>
+   </Provider>
   )
 }
