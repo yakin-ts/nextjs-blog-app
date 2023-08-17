@@ -1,5 +1,6 @@
 import React from 'react';
-import { useSelector } from 'react-redux'; // Import useSelector from Redux Toolkit
+import { useSelector } from 'react-redux';
+import { useGetBlogsQuery } from '../store/features/blogs-api'; // Import useSelector from Redux Toolkit
 import { useRouter } from 'next/router';
 import Blog from '../components/Blog';
 import styles from '../styles/home.module.css';
@@ -9,7 +10,8 @@ const BlogPage = () => {
   const { slug } = router.query;
 
   // Use useSelector to get the blogPosts from the Redux state
-  const blogPosts = useSelector((state) => state.blogs);
+  const { data: blogPosts = [], error, isLoading } = useGetBlogsQuery(); // Access the 'blogs' reducer slice
+  console.log(blogPosts);
 
   // Find the blog post with the matching ID in the state
   const selectedBlog = blogPosts.find((blog) => blog._id === slug);

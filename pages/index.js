@@ -7,6 +7,8 @@ const Home = () => {
   // Use the generated query hook to fetch data
   const { data: blogPosts = [], error, isLoading } = useGetBlogsQuery();
 
+  console.log(blogPosts)
+
   if (isLoading) {
     return <p>Loading...</p>;
   }

@@ -1,9 +1,12 @@
 import React from 'react';
-import { useUpdateBlogMutation } from '../store/features/blogs-api';
+import { useRouter } from 'next/router';
+import { useEditBlogMutation, useGetBlogsQuery } from '../store/features/blogs-api';
 import styles from './EditBlogForm.module.css';
 
 const EditBlogForm = ({ formData, setFormData }) => {
-    const [updateBlog, { isLoading }] = useUpdateBlogMutation();
+    const [editBlog, error, isLoading ] = useEditBlogMutation();
+    const router = useRouter();
+    const { queryClient } = useGetBlogsQuery;
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -16,14 +19,19 @@ const EditBlogForm = ({ formData, setFormData }) => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const updatedBlogPost = await updateBlog(formData); // Use the updateBlog mutation
+            const updatedBlogPost = await editBlog(formData);
 
-            // Handle the updated data as needed
-
+            if (updatedBlogPost) {
+                router.push('/');
+            }
         } catch (error) {
             console.error('Error updating blog post', error);
         }
     };
+
+    if (isLoading) {
+        return <h1>Updating....</h1>;
+    }
 
     return (
         <div className={styles.edit_blog_form}>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useRouter } from 'next/router';
 import styles from './AddBlogForm.module.css';
 import { useAddBlogMutation } from '../store/features/blogs-api';
 
@@ -6,6 +7,8 @@ const AddBlogForm = ({ onSubmit, isError }) => {
   const [author, setAuthor] = useState('');
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
+
+  const router = useRouter()
 
   const [addBlog, { isLoading }] = useAddBlogMutation();
 
@@ -22,6 +25,7 @@ const AddBlogForm = ({ onSubmit, isError }) => {
       setAuthor('');
       setTitle('');
       setBody('');
+      router.push('/')
     }
   };
 

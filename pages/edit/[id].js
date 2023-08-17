@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { useUpdateBlogMutation, useGetBlogsQuery } from '../../store/features/blogs-api'; // Import the generated RTK Query hooks
+import { useEditBlogMutation , useGetBlogsQuery } from '../../store/features/blogs-api'; // Import the generated RTK Query hooks
 import EditBlogForm from '../../components/EditBlogForm';
 
 const EditBlogPage = () => {
@@ -9,9 +9,10 @@ const EditBlogPage = () => {
 
   // Use the generated query hooks to fetch data and update a blog post
   const { data: blogPosts } = useGetBlogsQuery();
-  const [updateBlog] = useUpdateBlogMutation();
+  const [editBlog] = useEditBlogMutation();
 
   const selectedBlog = blogPosts?.find((blog) => blog._id === id);
+  console.log(selectedBlog)
 
   const [formData, setFormData] = useState({
     author: '',
@@ -35,7 +36,7 @@ const EditBlogPage = () => {
 
     try {
       const { id, ...updatedData } = formData;
-      const response = await updateBlog(updatedData); // Use the updateBlog mutation
+      const response = await editBlog(updatedData); // Use the updateBlog mutation
 
       if (response.data) {
         console.log('Blog was updated');
